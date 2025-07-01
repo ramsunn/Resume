@@ -216,7 +216,7 @@
 
     <header class="fixed top-0 right-0 left-0 z-50 transition-all duration-300">
         <nav class="container flex justify-between items-center px-6 py-4 mx-auto">
-            <a href="#" class="text-2xl font-bold text-white magnetic-item" data-cursor-text="Home">
+            <a href="#about" class="text-2xl font-bold text-white magnetic-item" data-cursor-text="Home">
                 SR<span style="color: var(--primary-color);">.</span>
             </a>
             <div class="hidden items-center space-x-8 md:flex">
@@ -305,7 +305,7 @@
                     </div>
                     <div class="glass-card p-6 reveal" style="transition-delay: 0.1s;">
                         <h3 class="text-xl font-bold text-white mb-4">Development Tools</h3>
-                        <ul class="space-y-2 text-gray-300"><li class="flex items-center"><i class="fas fa-code fa-fw mr-3 text-cyan-400"></i> VS Code</li><li class="flex items-center"><i class="fab fa-docker fa-fw mr-3 text-blue-500"></i> Docker</li><li class="flex items-center"><i class="fab fa-git-alt fa-fw mr-3 text-orange-500"></i> Git & GitHub</li><li class="flex items-center"><i class="fas fa-terminal fa-fw mr-3 text-gray-400"></i> Windows Terminal & Kitty</li></ul>
+                        <ul class="space-y-2 text-gray-300"><li class="flex items-center"><i class="fas fa-code fa-fw mr-3 text-cyan-400"></i> VS Code</li><li class="fab fa-docker fa-fw mr-3 text-blue-500"></i> Docker</li><li class="flex items-center"><i class="fab fa-git-alt fa-fw mr-3 text-orange-500"></i> Git & GitHub</li><li class="flex items-center"><i class="fas fa-terminal fa-fw mr-3 text-gray-400"></i> Windows Terminal & Kitty</li></ul>
                     </div>
                     <div class="glass-card p-6 reveal" style="transition-delay: 0.2s;">
                         <h3 class="text-xl font-bold text-white mb-4">Hardware & Setup</h3>
@@ -370,7 +370,6 @@
             <h2 class="mb-4 text-3xl font-bold">Get In Touch</h2>
             <p class="mb-8 max-w-2xl mx-auto text-gray-400">I'm always open to discussing new projects, creative ideas, or opportunities. Reach out and let's build the future together.</p>
             <div class="flex justify-center items-center mb-10 space-x-6 md:space-x-8">
-                <a href="tel:+919361152637" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Call Me"><i class="fas fa-phone"></i></a>
                 <a href="mailto:sundar0raman@gmail.com" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Email Me"><i class="fas fa-envelope"></i></a>
                 <a href="https://www.instagram.com/pixelpilot.10" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://github.com/SundarRaman21" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="GitHub"><i class="fab fa-github"></i></a>
@@ -400,20 +399,41 @@
         <div class="modal-content">
             <span class="modal-close" data-modal-close>&times;</span>
             <h3 class="text-3xl font-bold text-white mb-4">Personal Cloud Storage Network</h3>
-            <p>Case study for Project 2...</p>
+            <div class="text-gray-300 space-y-4">
+                <p><strong class="text-pink-400">The Problem:</strong> I wanted a robust, private, and secure alternative to commercial cloud storage services, offering full control over my data and high availability across my devices.</p>
+                <p><strong class="text-pink-400">My Process:</strong> I designed and implemented a multi-device synchronization system using Nextcloud hosted on my home server. I configured secure remote access via a reverse proxy and implemented a robust backup strategy to external storage.</p>
+                <p><strong class="text-pink-400">Tech Stack:</strong> Nextcloud, Apache/Nginx, Let's Encrypt (for SSL), Rclone, Proxmox LXC.</p>
+                <p><strong class="text-pink-400">Challenges & Solutions:</strong> Ensuring secure external access while maintaining performance was crucial. I leveraged Nginx Proxy Manager to handle SSL termination and route traffic efficiently, enhancing security and simplifying certificate management.</p>
+            </div>
         </div>
     </div>
     <div id="modal-3" class="modal-overlay">
         <div class="modal-content">
             <span class="modal-close" data-modal-close>&times;</span>
             <h3 class="text-3xl font-bold text-white mb-4">OS Prototyping & Bug Triage</h3>
-            <p>Case study for Project 3...</p>
+            <div class="text-gray-300 space-y-4">
+                <p><strong class="text-pink-400">The Problem:</strong> Exploring new operating systems and their nuances often involves significant setup and troubleshooting. I aimed to streamline this process and actively contribute to improving OS stability.</p>
+                <p><strong class="text-pink-400">My Process:</strong> I set up multiple dedicated environments (virtual machines, multi-boot systems) to rigorously test pre-release and custom OS builds, including various Linux distributions and macOS (Hackintosh). I meticulously documented bugs, identified root causes, and provided actionable feedback to developer communities and beta programs.</p>
+                <p><strong class="text-pink-400">Tech Stack:</strong> VirtualBox, VMware, KVM/QEMU, various Linux distributions (Arch, Fedora, Ubuntu), macOS (OpenCore/Clover), custom kernel patches.</p>
+                <p><strong class="text-pink-400">Challenges & Solutions:</strong> Hardware compatibility and driver issues were common, especially with Hackintosh builds. My solution involved deep dives into hardware specifications, EFI configuration, and precise driver selection, often involving compiling custom kexts or kernel modules.</p>
+            </div>
         </div>
     </div>
 
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Auto-scroll to "About" section on page load, and clear URL hash ---
+        // This ensures the page always starts at "My Philosophy & Approach" regardless of prior navigation or refreshes.
+        const aboutSection = document.getElementById('about');
+        if (aboutSection) {
+            aboutSection.scrollIntoView({ behavior: 'instant' }); // Use 'instant' for immediate jump
+            if (history.replaceState) {
+                // Remove the hash from the URL without reloading the page
+                history.replaceState(null, null, window.location.pathname + window.location.search);
+            }
+        }
 
         // --- Header Background on Scroll ---
         const header = document.querySelector('header');
@@ -480,10 +500,10 @@
             help: 'Available commands: [help, whoami, contact, ls, cat, clear]',
             whoami: 'T.C. Sundar Raman, a technology architect, creative problem-solver, and Linux enthusiast.',
             contact: 'You can reach me at <a href="mailto:sundar0raman@gmail.com" class="text-cyan-400">sundar0raman@gmail.com</a>',
-            ls: 'projects/  knowledge/  toolbox/',
-            'cat projects/': 'Bespoke_Home_Lab.md  Personal_Cloud.md  OS_Prototyping.md',
-            'cat knowledge/': 'System_Architecture  Cloud_&_DevOps  Networking_&_Security',
-            'cat toolbox/': 'Arch_Linux  Docker  VS_Code  Google_Pixel',
+            ls: 'projects/  knowledge/  toolbox/',
+            'cat projects/': 'Bespoke_Home_Lab.md  Personal_Cloud.md  OS_Prototyping.md',
+            'cat knowledge/': 'System_Architecture  Cloud_&_DevOps  Networking_&_Security',
+            'cat toolbox/': 'Arch_Linux  Docker  VS_Code  Google_Pixel',
             clear: ''
         };
 
@@ -497,116 +517,134 @@
                 outputLine.innerHTML = `<span class="prompt">sundar@portfolio:~$</span> <span class="command">${command}</span>`;
                 terminalOutput.appendChild(outputLine);
 
-                if (command === 'clear') {
+                let response = commands[command.toLowerCase()];
+                if (response === undefined) {
+                    response = `command not found: ${command}`;
+                } else if (command.toLowerCase() === 'clear') {
                     terminalOutput.innerHTML = '';
-                } else if (commands[command]) {
-                    const response = document.createElement('div');
-                    response.innerHTML = commands[command];
-                    terminalOutput.appendChild(response);
-                } else {
-                    const error = document.createElement('div');
-                    error.textContent = `bash: command not found: ${command}`;
-                    terminalOutput.appendChild(error);
+                    this.value = '';
+                    return;
                 }
                 
+                const responseLine = document.createElement('div');
+                responseLine.innerHTML = response.replace(/\n/g, '<br>');
+                terminalOutput.appendChild(responseLine);
+                
                 this.value = '';
-                document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to bottom
             }
         });
 
-        // --- NEW: Modal Logic ---
-        document.querySelectorAll('[data-modal-target]').forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const targetId = trigger.getAttribute('data-modal-target');
-                document.getElementById(targetId).classList.add('active');
+        // --- NEW: Modal Functionality ---
+        document.querySelectorAll('[data-modal-target]').forEach(button => {
+            button.addEventListener('click', () => {
+                const modalId = button.getAttribute('data-modal-target');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                }
             });
         });
+
+        document.querySelectorAll('[data-modal-close]').forEach(closeButton => {
+            closeButton.addEventListener('click', () => {
+                const modal = closeButton.closest('.modal-overlay');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Close modal when clicking outside
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal-overlay') || e.target.hasAttribute('data-modal-close')) {
+                if (e.target === overlay) {
                     overlay.classList.remove('active');
                 }
             });
         });
 
-        // --- NEW: Live Server Status ---
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
-        
-        function checkServerStatus() {
-            // IMPORTANT: Replace this with your actual server API endpoint.
-            // This is a placeholder that will always fail for demonstration.
-            const apiEndpoint = 'https://your-server-endpoint.com/api/status';
+        // --- Three.js Background Animation ---
+        const canvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-            fetch(apiEndpoint)
-                .then(response => {
-                    if (response.ok) return response.json();
-                    throw new Error('Network response was not ok.');
-                })
-                .then(data => {
-                    statusDot.className = 'status-dot online';
-                    statusText.textContent = 'Server Status: Online';
-                })
-                .catch(error => {
-                    statusDot.className = 'status-dot offline';
-                    statusText.textContent = 'Server Status: Offline';
-                });
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 500;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
         }
-        // checkServerStatus(); // Initial check
-        // setInterval(checkServerStatus, 60000); // Check every minute
-        // NOTE: For now, we will simulate it being offline. Remove this line and uncomment the lines above when you have a real endpoint.
-        statusDot.className = 'status-dot offline';
-        statusText.textContent = 'Server Status: Offline';
 
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
-        // --- Three.js Organic Blob Background ---
-        let scene, camera, renderer, clock, uniforms;
-        function initThreeJS() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 1;
-            renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg-canvas'), alpha: true });
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            clock = new THREE.Clock();
-            const geometry = new THREE.PlaneGeometry(2, 2);
-            uniforms = {
-                u_time: { value: 0.0 },
-                u_mouse: { value: new THREE.Vector2() },
-                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                u_color1: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim()) },
-                u_color2: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim()) },
-                u_color3: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim()) },
-            };
-            const material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
-                fragmentShader: `uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_color1; uniform vec3 u_color2; uniform vec3 u_color3; float blob(vec2 st, float radius, vec2 pos) { return radius / distance(st, pos); } void main() { vec2 st = gl_FragCoord.xy / u_resolution.xy; st.x *= u_resolution.x / u_resolution.y; float d = 0.0; vec2 pos1 = vec2(0.5 + 0.2 * sin(u_time * 0.5), 0.5 + 0.2 * cos(u_time * 0.5)); vec2 pos2 = vec2(0.5 + 0.3 * sin(u_time * 0.8), 0.5 + 0.3 * cos(u_time * 0.7)); vec2 pos3 = vec2(u_mouse.x, 1.0 - u_mouse.y); d += blob(st, 0.075, pos1); d += blob(st, 0.1, pos2); d += blob(st, 0.05, pos3); vec3 color = mix(u_color1, u_color2, smoothstep(0.8, 1.2, d)); color = mix(color, u_color3, smoothstep(1.0, 1.5, d)); gl_FragColor = vec4(color * smoothstep(0.7, 2.0, d), 1.0); }`
-            });
-            const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            window.addEventListener('resize', onWindowResize, false);
-            document.addEventListener('mousemove', onThreeJSMouseMove, false);
-            animateThreeJS();
-        }
-        function onWindowResize() {
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--primary-color')),
+            transparent: true,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            uniforms.u_resolution.value.x = window.innerWidth;
-            uniforms.u_resolution.value.y = window.innerHeight;
-        }
-        function onThreeJSMouseMove(event) {
-            uniforms.u_mouse.value.x = event.clientX / window.innerWidth;
-            uniforms.u_mouse.value.y = 1.0 - (event.clientY / window.innerHeight);
-        }
-        function animateThreeJS() {
-            requestAnimationFrame(animateThreeJS);
-            uniforms.u_time.value = clock.getElapsedTime();
-            renderer.render(scene, camera);
-        }
-        initThreeJS();
+        });
 
+        let mouseX = 0;
+        let mouseY = 0;
+        window.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        });
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.0008;
+
+            const targetX = (mouseX / window.innerWidth - 0.5) * 0.1;
+            const targetY = (mouseY / window.innerHeight - 0.5) * 0.1;
+
+            camera.position.x += (targetX - camera.position.x) * 0.05;
+            camera.position.y += (-targetY - camera.position.y) * 0.05;
+
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        // --- NEW: Server Status Simulation ---
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+
+        function updateServerStatus() {
+            // Simulate API call or real-time check
+            const isOnline = Math.random() > 0.2; // 80% chance of being online
+            if (isOnline) {
+                statusDot.classList.remove('offline');
+                statusDot.classList.add('online');
+                statusText.textContent = 'Server Status: Online';
+            } else {
+                statusDot.classList.remove('online');
+                statusDot.classList.add('offline');
+                statusText.textContent = 'Server Status: Offline';
+            }
+        }
+
+        updateServerStatus(); // Initial status check
+        setInterval(updateServerStatus, 15000); // Update every 15 seconds
     });
     </script>
 </body>
