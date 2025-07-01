@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.C. Sundar Raman - Technology Architect & AI Innovator</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="https://placehold.co/32x32/EC4899/FFFFFF?text=SR" type="image/png">
+
+    <style>
+        :root {
+            --primary-color: #EC4899;   /* Vivid Hot Pink */
+            --secondary-color: #06B6D4; /* Bright Cyan */
+            --accent-color: #A855F7;    /* Bright Purple */
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --expressive-ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: #030712;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        main, header, footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Custom Cursor & Mouse Follower --- */
+        #mouse-follower {
+            position: fixed;
+            z-index: 9999;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, var(--primary-color) 0%, rgba(236, 72, 153, 0) 70%);
+            border-radius: 50%;
+            filter: blur(15px);
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            transform: translate(-50%, -50%);
+        }
+        #cursor-text {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background-color: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.2s ease-out, transform 0.1s ease-out;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+        body:hover #cursor-text.visible {
+            opacity: 1;
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 2px 0 rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            transition: border-radius 0.5s var(--expressive-ease);
+        }
+        .glass-card:hover {
+            border-radius: 2rem 1rem 2rem 1rem;
+        }
+        
+        .profile-shape {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            transition: border-radius 0.5s var(--expressive-ease), transform 0.4s var(--expressive-ease);
+            overflow: hidden;
+        }
+        .profile-shape:hover {
+            border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+            transform: scale(1.05) rotate(-3deg);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            border: 2px solid #0f172a;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: transform 1s var(--expressive-ease), opacity 1s var(--expressive-ease);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes squish {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95, 1.05); }
+        }
+        .squishing {
+            animation: squish 0.3s var(--expressive-ease);
+        }
+        
+        /* --- NEW: CLI / Terminal Styles --- */
+        .terminal {
+            font-family: 'Fira Code', monospace;
+            background-color: rgba(10, 15, 25, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            height: 400px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .terminal-output, .terminal-line { display: block; }
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            font-family: 'Fira Code', monospace;
+        }
+        .terminal-input:focus { outline: none; }
+        .prompt { color: var(--secondary-color); }
+        .command { color: var(--primary-color); }
+
+        /* --- NEW: Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s var(--expressive-ease);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: #030712;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s var(--expressive-ease);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* --- NEW: Live Status Styles --- */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: background-color 0.5s ease;
+        }
+        .status-dot.online { background-color: var(--secondary-color); }
+        .status-dot.offline { background-color: #ef4444; }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="mouse-follower"></div>
+    <div id="cursor-text"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <header class="fixed top-0 right-0 left-0 z-50 transition-all duration-300">
+        <nav class="container flex justify-between items-center px-6 py-4 mx-auto">
+            <a href="#" class="text-2xl font-bold text-white magnetic-item" data-cursor-text="Home">
+                SR<span style="color: var(--primary-color);">.</span>
+            </a>
+            <div class="hidden items-center space-x-8 md:flex">
+                <a href="#about" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="About">About</a>
+                <a href="#knowledge" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="Skills">Knowledge</a>
+                <a href="#toolbox" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="Tools">Toolbox</a>
+                <a href="#projects" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="Projects">Projects</a>
+                <a href="#cli" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="CLI">CLI</a>
+                <a href="#contact" class="text-gray-300 transition-colors duration-300 hover:text-white magnetic-item" data-cursor-text="Contact">Contact</a>
+            </div>
+             <a href="#resume" class="hidden px-4 py-2 font-semibold text-white rounded-lg shadow-lg transition-all duration-300 transform md:inline-block hover:scale-105 magnetic-item" style="background-color: var(--primary-color);" data-cursor-text="Resume">
+                My Resume
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="flex relative items-center min-h-screen">
+            <div class="container relative z-20 px-6 mx-auto text-center">
+                <div class="mx-auto max-w-4xl">
+                    <h1 class="mb-4 text-4xl font-extrabold leading-tight text-white md:text-6xl lg:text-7xl reveal">
+                        T.C. Sundar Raman
+                    </h1>
+                    <p class="mb-8 text-xl font-medium md:text-2xl reveal" style="color: var(--primary-color);">
+                        Architecting Intelligent Systems <span class="text-gray-400">&</span> Digital Experiences
+                    </p>
+                    <p class="mx-auto mb-10 max-w-2xl text-gray-300 reveal">
+                        Bridging the gap between complex hardware and intelligent software. I engineer solutions that are powerful, intuitive, and meticulously designed—from the silicon to the user interface.
+                    </p>
+                    <div class="reveal">
+                        <a href="#projects" class="inline-block px-8 py-3 font-bold text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105 magnetic-item" data-cursor-text="My Work">
+                            View My Work
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 md:py-32">
+            <div class="container px-6 mx-auto">
+                <div class="grid gap-12 lg:gap-20 items-center md:grid-cols-5">
+                    <div class="flex justify-center items-center md:col-span-2 reveal">
+                        <div class="relative w-full max-w-sm mx-auto md:max-w-none aspect-square profile-shape shadow-2xl">
+                           <img src="profile.jpg" alt="T.C. Sundar Raman" class="absolute inset-0 object-cover w-full h-full" onerror="this.onerror=null;this.src='https://placehold.co/600x600/030712/EC4899?text=SR';">
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 reveal">
+                        <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl">My Philosophy & Approach</h2>
+                        <div class="mb-6 w-24 h-1 rounded-full" style="background-color: var(--primary-color);"></div>
+                        <p class="mb-4 text-lg text-gray-300">
+                            Hello! I'm Sundar Raman, a 19-year-old technologist and polymath, passionate about the architecture of AI, advanced electronics, and operating systems. My work is driven by a foundational curiosity to deconstruct complex systems and rebuild them with enhanced capability and elegance.
+                        </p>
+                        <p class="mb-6 text-lg text-gray-300">
+                           My expertise lies not just in a single domain, but at their intersection. I create synergistic technologies where intelligent software seamlessly commands powerful hardware. From deploying scalable cloud infrastructure to engineering a custom Hackintosh build, I am relentlessly pursuing mastery and innovation.
+                        </p>
+                        <a href="#contact" class="font-semibold transition-colors magnetic-item" style="color: var(--primary-color);" data-cursor-text="Let's Talk">Let's connect &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="knowledge" class="py-20 md:py-32">
+            <div class="container px-6 mx-auto text-center">
+                <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl reveal">Core Competencies</h2>
+                <div class="mb-12 w-24 h-1 mx-auto rounded-full" style="background-color: var(--secondary-color);"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 reveal"> <i class="fas fa-server text-5xl mb-4" style="color: var(--accent-color);"></i> <h3 class="text-2xl font-semibold text-white mb-3">System Architecture & OS Mastery</h3> <p class="text-gray-400 text-sm"> Deep proficiency in Linux (Arch, Fedora). Expert in multi-boot configurations, system hardening, and building custom OS experiences like Hackintosh. </p> </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.1s;"> <i class="fas fa-cloud text-5xl mb-4" style="color: var(--secondary-color);"></i> <h3 class="text-2xl font-semibold text-white mb-3">Cloud & DevOps</h3> <p class="text-gray-400 text-sm"> Deploying and managing infrastructure on Hetzner, AWS, & GCP. Skilled in containerization with Docker and foundational CI/CD pipeline concepts. </p> </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.2s;"> <i class="fas fa-shield-alt text-5xl mb-4" style="color: var(--primary-color);"></i> <h3 class="text-2xl font-semibold text-white mb-3">Network & Security Engineering</h3> <p class="text-gray-400 text-sm"> Designing and managing robust network infrastructures. Proficient in proxy/RDP configuration and implementing security best practices to ensure system integrity. </p> </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.3s;"> <i class="fas fa-microchip text-5xl mb-4" style="color: #60A5FA;"></i> <h3 class="text-2xl font-semibold text-white mb-3">Electronics & Hardware</h3> <p class="text-gray-400 text-sm"> Skilled in diagnosing and repairing electronic devices at a component level. Understanding of circuit design, microcontrollers, and firmware. </p> </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.4s;"> <i class="fas fa-brain text-5xl mb-4" style="color: #34D399;"></i> <h3 class="text-2xl font-semibold text-white mb-3">AI & Strategic Problem-Solving</h3> <p class="text-gray-400 text-sm"> Leveraging AI tools and a unique analytical approach to troubleshoot complex issues, finding efficient and creative solutions where others see roadblocks. </p> </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.5s;"> <i class="fas fa-check-circle text-5xl mb-4" style="color: #FBBF24;"></i> <h3 class="text-2xl font-semibold text-white mb-3">Software Quality Assurance</h3> <p class="text-gray-400 text-sm"> Experienced in pre-release software evaluation, including Android Beta programs, focusing on detailed bug reporting and actionable user feedback. </p> </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="toolbox" class="py-20 md:py-32">
+            <div class="container px-6 mx-auto text-center">
+                <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl reveal">My Digital Toolbox</h2>
+                <div class="mb-12 w-24 h-1 mx-auto rounded-full" style="background-color: var(--accent-color);"></div>
+                <p class="mb-16 max-w-3xl mx-auto text-lg text-gray-300 reveal">The tools and technologies I use to build, tinker, and create. This is the gear behind the magic.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                    <div class="glass-card p-6 reveal">
+                        <h3 class="text-xl font-bold text-white mb-4">Operating Systems</h3>
+                        <ul class="space-y-2 text-gray-300"><li class="flex items-center"><i class="fab fa-linux fa-fw mr-3 text-pink-400"></i> Arch Linux (Daily Driver)</li><li class="flex items-center"><i class="fab fa-fedora fa-fw mr-3 text-blue-400"></i> Fedora Linux</li><li class="flex items-center"><i class="fab fa-apple fa-fw mr-3 text-gray-300"></i> macOS (Hackintosh)</li><li class="flex items-center"><i class="fab fa-windows fa-fw mr-3 text-sky-400"></i> Windows 11</li></ul>
+                    </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.1s;">
+                        <h3 class="text-xl font-bold text-white mb-4">Development Tools</h3>
+                        <ul class="space-y-2 text-gray-300"><li class="flex items-center"><i class="fas fa-code fa-fw mr-3 text-cyan-400"></i> VS Code</li><li class="flex items-center"><i class="fab fa-docker fa-fw mr-3 text-blue-500"></i> Docker</li><li class="flex items-center"><i class="fab fa-git-alt fa-fw mr-3 text-orange-500"></i> Git & GitHub</li><li class="flex items-center"><i class="fas fa-terminal fa-fw mr-3 text-gray-400"></i> Windows Terminal & Kitty</li></ul>
+                    </div>
+                    <div class="glass-card p-6 reveal" style="transition-delay: 0.2s;">
+                        <h3 class="text-xl font-bold text-white mb-4">Hardware & Setup</h3>
+                        <ul class="space-y-2 text-gray-300"><li class="flex items-center"><i class="fas fa-server fa-fw mr-3 text-purple-400"></i> Home Server (Proxmox)</li><li class="flex items-center"><i class="fas fa-laptop fa-fw mr-3 text-gray-300"></i> Primary Laptop</li><li class="flex items-center"><i class="fas fa-mobile-alt fa-fw mr-3 text-green-400"></i> Google Pixel</li><li class="flex items-center"><i class="fas fa-microchip fa-fw mr-3 text-red-400"></i> Soldering Station & Multimeter</li></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 md:py-32">
+            <div class="container px-6 mx-auto text-center">
+                <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl reveal">Featured Initiatives</h2>
+                <div class="mb-12 w-24 h-1 mx-auto rounded-full" style="background-color: var(--primary-color);"></div>
+                <p class="mb-16 max-w-3xl mx-auto text-lg text-gray-300 reveal">A selection of practical projects where I've applied my skills to build robust, real-world systems that solve tangible problems.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 reveal magnetic-item" data-cursor-text="View Case Study" data-modal-target="modal-1">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-xl bg-gray-800"><img src="https://placehold.co/400x250/030712/06B6D4?text=Home+Lab" alt="Home Lab" class="object-cover w-full h-full"></div>
+                        <h3 class="mb-2 text-xl font-semibold text-white">Bespoke Home Lab & Server</h3>
+                        <p class="mb-4 text-gray-400 text-sm">Architected and deployed a multi-purpose home server for development, media streaming, and testing environments.</p>
+                        <span class="font-semibold transition-colors" style="color: var(--secondary-color);">View Case Study &rarr;</span>
+                    </div>
+                    <div class="glass-card p-6 reveal magnetic-item" style="transition-delay: 0.1s;" data-cursor-text="View Case Study" data-modal-target="modal-2">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-xl bg-gray-800"><img src="https://placehold.co/400x250/030712/A855F7?text=Cloud+Storage" alt="Cloud Storage" class="object-cover w-full h-full"></div>
+                        <h3 class="mb-2 text-xl font-semibold text-white">Personal Cloud Storage Network</h3>
+                        <p class="mb-4 text-gray-400 text-sm">Engineered a secure storage solution that syncs data across local devices to a private cloud instance, ensuring data integrity.</p>
+                        <span class="font-semibold transition-colors" style="color: var(--secondary-color);">View Case Study &rarr;</span>
+                    </div>
+                    <div class="glass-card p-6 reveal magnetic-item" style="transition-delay: 0.2s;" data-cursor-text="View Case Study" data-modal-target="modal-3">
+                        <div class="w-full h-48 mb-6 overflow-hidden rounded-xl bg-gray-800"><img src="https://placehold.co/400x250/030712/EC4899?text=OS+Tinkering" alt="OS Tinkering" class="object-cover w-full h-full"></div>
+                        <h3 class="mb-2 text-xl font-semibold text-white">OS Prototyping & Bug Triage</h3>
+                        <p class="mb-4 text-gray-400 text-sm">Extensive experience in deploying and modifying various OS on diverse hardware, contributing to bug identification and system improvement.</p>
+                        <span class="font-semibold transition-colors" style="color: var(--secondary-color);">View Case Study &rarr;</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cli" class="py-20 md:py-32">
+            <div class="container px-6 mx-auto">
+                <div class="text-center">
+                    <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl reveal">Interactive Terminal</h2>
+                    <div class="mb-12 w-24 h-1 mx-auto rounded-full" style="background-color: var(--secondary-color);"></div>
+                    <p class="mb-8 max-w-2xl mx-auto text-lg text-gray-300 reveal">A nod to my love for the command line. Try a few commands like <code class="bg-gray-800 text-pink-400 px-1 rounded">help</code>, <code class="bg-gray-800 text-pink-400 px-1 rounded">ls</code>, or <code class="bg-gray-800 text-pink-400 px-1 rounded">contact</code>.</p>
+                </div>
+                <div id="terminal" class="terminal max-w-4xl mx-auto reveal shadow-2xl" onclick="document.getElementById('terminal-input').focus()">
+                    <div id="terminal-output"></div>
+                    <div class="terminal-line">
+                        <span class="prompt">sundar@portfolio:~$</span>
+                        <input type="text" id="terminal-input" class="terminal-input" autofocus>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resume" class="py-20 md:py-32">
+             <div class="container px-6 mx-auto text-center"> <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl reveal">My Resume</h2> <div class="mb-12 w-24 h-1 mx-auto rounded-full" style="background-color: var(--accent-color);"></div> <p class="mb-8 max-w-2xl mx-auto text-lg text-gray-300 reveal"> Download my full resume for a detailed overview of my skills, experience, and projects. </p> <div class="reveal"> <a href="#" target="_blank" class="inline-block px-8 py-3 font-bold text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 magnetic-item" style="background-color: var(--accent-color);" data-cursor-text="Download"> <i class="fas fa-download mr-2"></i> Download Resume </a> </div> <div class="mt-12 text-center text-gray-400 text-sm reveal"> <p>Alternatively, explore my profiles:</p> <div class="flex justify-center space-x-6 mt-4"> <a href="#" target="_blank" class="text-gray-400 hover:text-white transition-colors text-2xl magnetic-item" data-cursor-text="LinkedIn"><i class="fab fa-linkedin"></i> LinkedIn</a> <a href="https://github.com/SundarRaman21" target="_blank" class="text-gray-400 hover:text-white transition-colors text-2xl magnetic-item" data-cursor-text="GitHub"><i class="fab fa-github"></i> GitHub</a> </div> </div> </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="py-16 bg-black bg-opacity-20">
+        <div class="container px-6 mx-auto text-center">
+            <h2 class="mb-4 text-3xl font-bold">Get In Touch</h2>
+            <p class="mb-8 max-w-2xl mx-auto text-gray-400">I'm always open to discussing new projects, creative ideas, or opportunities. Reach out and let's build the future together.</p>
+            <div class="flex justify-center items-center mb-10 space-x-6 md:space-x-8">
+                <a href="tel:+919361152637" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Call Me"><i class="fas fa-phone"></i></a>
+                <a href="mailto:sundar0raman@gmail.com" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Email Me"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.instagram.com/pixelpilot.10" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/SundarRaman21" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-300 text-3xl magnetic-item" data-cursor-text="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="flex justify-center items-center space-x-2 text-sm text-gray-500 mb-4">
+                <span id="status-text">Server Status</span>
+                <div id="status-dot" class="status-dot"></div>
+            </div>
+            <p class="text-sm text-gray-500">&copy; 2025 T.C. Sundar Raman. All Rights Reserved.</p>
+            <p class="mt-2 text-xs text-gray-600">Designed with Material You Expressive Concepts & Three.js</p>
+        </div>
+    </footer>
+
+    <div id="modal-1" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" data-modal-close>&times;</span>
+            <h3 class="text-3xl font-bold text-white mb-4">Bespoke Home Lab & Server</h3>
+            <div class="text-gray-300 space-y-4">
+                <p><strong class="text-pink-400">The Problem:</strong> I needed a centralized, powerful, and efficient environment for development, running containerized applications, and serving media, without relying entirely on public cloud services.</p>
+                <p><strong class="text-pink-400">My Process:</strong> I sourced cost-effective hardware and installed Proxmox as a hypervisor to manage multiple virtual machines and containers. I configured secure network access, automated backups, and set up Docker for application deployment.</p>
+                <p><strong class="text-pink-400">Tech Stack:</strong> Proxmox VE, Debian Linux, Docker, Nginx Proxy Manager, ZFS for storage.</p>
+                <p><strong class="text-pink-400">Challenges & Solutions:</strong> A key challenge was silent, low-power operation. I solved this by carefully selecting components and using software tools to under-volt the CPU and control fan speeds dynamically.</p>
+            </div>
+        </div>
+    </div>
+    <div id="modal-2" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" data-modal-close>&times;</span>
+            <h3 class="text-3xl font-bold text-white mb-4">Personal Cloud Storage Network</h3>
+            <p>Case study for Project 2...</p>
+        </div>
+    </div>
+    <div id="modal-3" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" data-modal-close>&times;</span>
+            <h3 class="text-3xl font-bold text-white mb-4">OS Prototyping & Bug Triage</h3>
+            <p>Case study for Project 3...</p>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Header Background on Scroll ---
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('glass-card');
+            else header.classList.remove('glass-card');
+        });
+
+        // --- Animate elements on scroll ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // --- Physics-based Squishy Buttons ---
+        document.querySelectorAll('.magnetic-item').forEach(el => {
+            el.addEventListener('mousedown', () => el.classList.add('squishing'));
+            el.addEventListener('animationend', () => el.classList.remove('squishing'));
+        });
+
+        // --- Mouse Follower & Custom Cursor Text ---
+        const follower = document.getElementById('mouse-follower');
+        const cursorText = document.getElementById('cursor-text');
+        window.addEventListener('mousemove', e => {
+            follower.style.left = e.clientX + 'px';
+            follower.style.top = e.clientY + 'px';
+            cursorText.style.left = e.clientX + 'px';
+            cursorText.style.top = e.clientY + 30 + 'px';
+        });
+        document.querySelectorAll('[data-cursor-text]').forEach(el => {
+            el.addEventListener('mouseover', () => {
+                cursorText.innerText = el.getAttribute('data-cursor-text');
+                cursorText.classList.add('visible');
+            });
+            el.addEventListener('mouseout', () => {
+                cursorText.classList.remove('visible');
+            });
+        });
+
+        // --- NEW: Magnetic Elements ---
+        const magneticItems = document.querySelectorAll('.magnetic-item');
+        const magneticStrength = 0.4; // 40% pull
+        magneticItems.forEach(item => {
+            item.addEventListener('mousemove', function(e) {
+                const pos = this.getBoundingClientRect();
+                const x = e.clientX - pos.left - pos.width / 2;
+                const y = e.clientY - pos.top - pos.height / 2;
+                this.style.transition = 'transform 0.1s ease';
+                this.style.transform = `translate(${x * magneticStrength}px, ${y * magneticStrength}px)`;
+            });
+            item.addEventListener('mouseout', function(e) {
+                this.style.transition = 'transform 0.3s ease';
+                this.style.transform = 'translate(0px, 0px)';
+            });
+        });
+
+        // --- NEW: CLI / Terminal Simulation ---
+        const terminalOutput = document.getElementById('terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+
+        const commands = {
+            help: 'Available commands: [help, whoami, contact, ls, cat, clear]',
+            whoami: 'T.C. Sundar Raman, a technology architect, creative problem-solver, and Linux enthusiast.',
+            contact: 'You can reach me at <a href="mailto:sundar0raman@gmail.com" class="text-cyan-400">sundar0raman@gmail.com</a>',
+            ls: 'projects/  knowledge/  toolbox/',
+            'cat projects/': 'Bespoke_Home_Lab.md  Personal_Cloud.md  OS_Prototyping.md',
+            'cat knowledge/': 'System_Architecture  Cloud_&_DevOps  Networking_&_Security',
+            'cat toolbox/': 'Arch_Linux  Docker  VS_Code  Google_Pixel',
+            clear: ''
+        };
+
+        const welcomeMessage = 'Welcome to my interactive terminal.\nType `help` to see available commands.\n';
+        terminalOutput.innerHTML = welcomeMessage.replace(/\n/g, '<br>');
+
+        terminalInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim();
+                const outputLine = document.createElement('div');
+                outputLine.innerHTML = `<span class="prompt">sundar@portfolio:~$</span> <span class="command">${command}</span>`;
+                terminalOutput.appendChild(outputLine);
+
+                if (command === 'clear') {
+                    terminalOutput.innerHTML = '';
+                } else if (commands[command]) {
+                    const response = document.createElement('div');
+                    response.innerHTML = commands[command];
+                    terminalOutput.appendChild(response);
+                } else {
+                    const error = document.createElement('div');
+                    error.textContent = `bash: command not found: ${command}`;
+                    terminalOutput.appendChild(error);
+                }
+                
+                this.value = '';
+                document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+            }
+        });
+
+        // --- NEW: Modal Logic ---
+        document.querySelectorAll('[data-modal-target]').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const targetId = trigger.getAttribute('data-modal-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay') || e.target.hasAttribute('data-modal-close')) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // --- NEW: Live Server Status ---
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        
+        function checkServerStatus() {
+            // IMPORTANT: Replace this with your actual server API endpoint.
+            // This is a placeholder that will always fail for demonstration.
+            const apiEndpoint = 'https://your-server-endpoint.com/api/status';
+
+            fetch(apiEndpoint)
+                .then(response => {
+                    if (response.ok) return response.json();
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    statusDot.className = 'status-dot online';
+                    statusText.textContent = 'Server Status: Online';
+                })
+                .catch(error => {
+                    statusDot.className = 'status-dot offline';
+                    statusText.textContent = 'Server Status: Offline';
+                });
+        }
+        // checkServerStatus(); // Initial check
+        // setInterval(checkServerStatus, 60000); // Check every minute
+        // NOTE: For now, we will simulate it being offline. Remove this line and uncomment the lines above when you have a real endpoint.
+        statusDot.className = 'status-dot offline';
+        statusText.textContent = 'Server Status: Offline';
+
+
+        // --- Three.js Organic Blob Background ---
+        let scene, camera, renderer, clock, uniforms;
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 1;
+            renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg-canvas'), alpha: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            clock = new THREE.Clock();
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            uniforms = {
+                u_time: { value: 0.0 },
+                u_mouse: { value: new THREE.Vector2() },
+                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_color1: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim()) },
+                u_color2: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim()) },
+                u_color3: { value: new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim()) },
+            };
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+                fragmentShader: `uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_color1; uniform vec3 u_color2; uniform vec3 u_color3; float blob(vec2 st, float radius, vec2 pos) { return radius / distance(st, pos); } void main() { vec2 st = gl_FragCoord.xy / u_resolution.xy; st.x *= u_resolution.x / u_resolution.y; float d = 0.0; vec2 pos1 = vec2(0.5 + 0.2 * sin(u_time * 0.5), 0.5 + 0.2 * cos(u_time * 0.5)); vec2 pos2 = vec2(0.5 + 0.3 * sin(u_time * 0.8), 0.5 + 0.3 * cos(u_time * 0.7)); vec2 pos3 = vec2(u_mouse.x, 1.0 - u_mouse.y); d += blob(st, 0.075, pos1); d += blob(st, 0.1, pos2); d += blob(st, 0.05, pos3); vec3 color = mix(u_color1, u_color2, smoothstep(0.8, 1.2, d)); color = mix(color, u_color3, smoothstep(1.0, 1.5, d)); gl_FragColor = vec4(color * smoothstep(0.7, 2.0, d), 1.0); }`
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            window.addEventListener('resize', onWindowResize, false);
+            document.addEventListener('mousemove', onThreeJSMouseMove, false);
+            animateThreeJS();
+        }
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uniforms.u_resolution.value.x = window.innerWidth;
+            uniforms.u_resolution.value.y = window.innerHeight;
+        }
+        function onThreeJSMouseMove(event) {
+            uniforms.u_mouse.value.x = event.clientX / window.innerWidth;
+            uniforms.u_mouse.value.y = 1.0 - (event.clientY / window.innerHeight);
+        }
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+            uniforms.u_time.value = clock.getElapsedTime();
+            renderer.render(scene, camera);
+        }
+        initThreeJS();
+
+    });
+    </script>
+</body>
+</html>
