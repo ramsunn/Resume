@@ -1,0 +1,78 @@
+{
+  "manifest_version": 3,
+  "name": "SurveyBot — AI Survey Automator",
+  "version": "1.1.1",
+  "description": "Automatically fill surveys using your AI-powered persona profile. Supports Google Forms, SurveyMonkey, Typeform, and any HTML form.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "tabs",
+    "notifications"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16":  "assets/icons/icon16.png",
+      "32":  "assets/icons/icon32.png",
+      "48":  "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "icons": {
+    "16":  "assets/icons/icon16.png",
+    "32":  "assets/icons/icon32.png",
+    "48":  "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "content/detectors/google-forms.js",
+        "content/detectors/surveymonkey.js",
+        "content/detectors/typeform.js",
+        "content/detectors/generic.js",
+        "content/answer-engine.js",
+        "content/filler.js",
+        "content/content.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "commands": {
+    "start-automation": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "Alt+Shift+S"
+      },
+      "description": "Start SurveyBot Automation"
+    },
+    "pause-automation": {
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "mac": "Alt+Shift+P"
+      },
+      "description": "Pause / Resume survey automation"
+    },
+    "stop-automation": {
+      "suggested_key": {
+        "default": "Alt+Shift+X",
+        "mac": "Alt+Shift+X"
+      },
+      "description": "Stop survey automation"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

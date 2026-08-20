@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SurveyBot — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+        </svg>
+      </div>
+      <span class="logo-title">Survey QA</span>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-tab="profiles">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Profiles
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+      <button class="nav-item" data-tab="history">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        History
+      </button>
+      <button class="nav-item" data-tab="shortcuts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M8 14h8"/></svg>
+        Shortcuts
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="version">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ── Profiles Tab ───────────────────────────────────────────── -->
+    <section class="tab-panel active" id="tab-profiles">
+      <div class="tab-header">
+        <div>
+          <h2 class="tab-title">Profiles</h2>
+          <p class="tab-desc">Manage synthetic test profiles for surveys you own or are authorized to test.</p>
+        </div>
+        <button class="btn-primary" id="btnNewProfile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Profile
+        </button>
+      </div>
+
+      <!-- Profile List -->
+      <div class="profile-list" id="profileList"></div>
+
+      <!-- Profile Editor (hidden by default) -->
+      <div class="profile-editor card" id="profileEditor" style="display:none;">
+        <div class="editor-header">
+          <h3 id="editorTitle">New Profile</h3>
+          <button class="icon-btn close-btn" id="btnCloseEditor">✕</button>
+        </div>
+
+        <div class="form-grid">
+          <!-- Basic Info -->
+          <div class="form-section-title">Basic Information</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="fName" placeholder="John Doe" />
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" id="fAge" placeholder="28" min="1" max="120" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Employment Status</label>
+              <select id="fEmployment"><option value="">Select…</option><option>Employed full-time</option><option>Employed part-time</option><option>Self-employed</option><option>Student</option><option>Unemployed</option><option>Retired</option></select>
+            </div>
+            <div class="form-group">
+              <label>Household Size</label>
+              <input type="number" id="fHousehold" placeholder="2" min="1" max="20" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group"><label>Preferred Language</label><input type="text" id="fLanguage" placeholder="English" /></div>
+            <div class="form-group"><label>Ethnicity <span class="hint">(optional)</span></label><input type="text" id="fEthnicity" placeholder="Test value" /></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full-width"><label>Political Affiliation <span class="hint">(optional synthetic test value)</span></label><input type="text" id="fPolitics" placeholder="Independent" /></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date of Birth <span class="hint">(for surveys asking DOB)</span></label>
+              <input type="date" id="fDOB" />
+            </div>
+            <div class="form-group">
+              <label>Gender</label>
+              <select id="fGender">
+                <option value="">Select…</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Non-binary</option>
+                <option>Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Marital Status</label>
+              <select id="fMarital">
+                <option value="">Select…</option>
+                <option>Single</option>
+                <option>Married</option>
+                <option>Divorced</option>
+                <option>In a relationship</option>
+                <option>Widowed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Demographics -->
+          <div class="form-section-title">Demographics</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Occupation</label>
+              <input type="text" id="fOccupation" placeholder="Software Engineer" />
+            </div>
+            <div class="form-group">
+              <label>Education</label>
+              <select id="fEducation">
+                <option value="">Select…</option>
+                <option>High School / GED</option>
+                <option>Some College</option>
+                <option>Associate's Degree</option>
+                <option>Bachelor's Degree</option>
+                <option>Master's Degree</option>
+                <option>Doctoral Degree</option>
+                <option>Trade / Vocational</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ethnicity / Race</label>
+              <select id="fEthnicity">
+                <option value="">Select…</option>
+                <option>White / Caucasian</option>
+                <option>Black / African American</option>
+                <option>Hispanic / Latino</option>
+                <option>Asian</option>
+                <option>Native American</option>
+                <option>Mixed / Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Political Affiliation</label>
+              <select id="fPolitics">
+                <option value="">Select…</option>
+                <option>Very Conservative</option>
+                <option>Conservative</option>
+                <option>Moderate / Independent</option>
+                <option>Liberal</option>
+                <option>Very Liberal</option>
+                <option>Apolitical / None</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Employment Status</label>
+              <select id="fEmployment">
+                <option value="">Select…</option>
+                <option>Employed Full-Time</option>
+                <option>Employed Part-Time</option>
+                <option>Self-Employed</option>
+                <option>Unemployed</option>
+                <option>Student</option>
+                <option>Retired</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Household Size</label>
+              <select id="fHousehold">
+                <option value="">Select…</option>
+                <option>1 (Live alone)</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5+</option>
+              </select>
+            </div>
+          </div>
+
+
+          <!-- Location & Income -->
+          <div class="form-section-title">Location &amp; Income</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" id="fCountry" placeholder="Australia" value="Australia" />
+            </div>
+            <div class="form-group">
+              <label>State / Territory</label>
+              <input type="text" id="fState" placeholder="New South Wales" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>City / Suburb</label>
+              <input type="text" id="fCity" placeholder="Sydney" />
+            </div>
+            <div class="form-group">
+              <label>Postal / Zip Code</label>
+              <input type="text" id="fPostcode" placeholder="2000" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Location String <span class="hint">(optional fallback)</span></label>
+              <input type="text" id="fLocation" placeholder="Sydney, Australia" />
+            </div>
+            <div class="form-group">
+              <label>Annual Income</label>
+              <select id="fIncome">
+                <option value="">Select…</option>
+                <option>Under $20k</option>
+                <option>$20k–$40k</option>
+                <option>$40k–$60k</option>
+                <option>$60k–$80k</option>
+                <option>$80k–$100k</option>
+                <option>$100k–$150k</option>
+                <option>Over $150k</option>
+                <option>Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="form-section-title">Contact (optional)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="fEmail" placeholder="john@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" id="fPhone" placeholder="+1 555 0100" />
+            </div>
+          </div>
+
+          <!-- Interests -->
+          <div class="form-section-title">Interests & Hobbies</div>
+          <div class="form-group full-width">
+            <label>Interests <span class="hint">(comma-separated)</span></label>
+            <input type="text" id="fInterests" placeholder="Technology, Gaming, Travel, Cooking" />
+          </div>
+
+          <!-- Persona Bio & Opinions -->
+          <div class="form-section-title">Personal Opinions &amp; Bio</div>
+          <div class="form-group full-width">
+            <label>Bio / Persona Details <span class="hint">(The AI uses this to give natural, consistent answers)</span></label>
+            <textarea id="fBio" rows="3" placeholder="Lives in Sydney, works as a software engineer, loves outdoor activities, prefers public transport, tech enthusiast."></textarea>
+          </div>
+
+          <!-- Custom Q&A -->
+          <div class="form-section-title">
+            Custom Q&amp;A Rules
+            <span class="hint">— explicit answers for specific questions</span>
+          </div>
+          <div class="custom-qa-list" id="customQAList"></div>
+          <button class="btn-outline" id="btnAddQA">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Rule
+          </button>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn-outline" id="btnCancelEdit">Cancel</button>
+          <button class="btn-primary" id="btnSaveProfile">Save Profile</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Settings Tab ──────────────────────────────────────────────── -->
+    <section class="tab-panel" id="tab-settings">
+      <div class="tab-header">
+        <div>
+          <h2 class="tab-title">Settings</h2>
+          <p class="tab-desc">Configure AI keys and automation behavior.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <!-- AI Settings -->
+        <div class="card">
+          <h3 class="card-title">🤖 AI Assistant</h3>
+          <p class="card-desc">Power your persona with Google Gemini or OpenAI to automatically answer complex open questions, matrices, and rating scales.</p>
+
+          <div class="form-group">
+            <label>Provider</label>
+            <select id="sAiProvider">
+              <option value="">None (rule-based only)</option>
+              <option value="gemini">Google Gemini (Recommended)</option>
+              <option value="openai">OpenAI (GPT-4o-mini)</option>
+            </select>
+          </div>
+
+          <div class="form-group ai-key-group" id="aiKeyGroup" style="display:none;">
+            <label>API Key</label>
+            <div class="input-with-toggle">
+              <input type="password" id="sApiKey" placeholder="AIza… or sk-…" autocomplete="off" />
+              <button class="icon-btn" id="btnToggleKey" title="Show/Hide">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group ai-model-group" id="aiModelGroup" style="display:none;">
+            <label>Model</label>
+            <select id="sAiModel"></select>
+          </div>
+
+          <button class="btn-outline" id="btnTestAI" style="margin-top:12px;">Test Connection</button>
+          <span class="ai-test-result" id="aiTestResult"></span>
+        </div>
+
+        <!-- Automation Behavior -->
+        <div class="card">
+          <h3 class="card-title">⚡ Automation &amp; Auto-Pilot</h3>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Auto-Start Surveys</div>
+              <div class="toggle-desc">Automatically start answering as soon as a survey page loads (no need to click Start every time)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="sAutoStart" checked />
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row" style="margin-top:16px;">
+            <div>
+              <div class="toggle-label">Auto-Submit Final Page</div>
+              <div class="toggle-desc">Automatically submit the survey on the final page</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="sAutoSubmit" checked />
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row" style="margin-top:16px;">
+            <div>
+              <div class="toggle-label">Continuous Auto-Pilot Loop</div>
+              <div class="toggle-desc">Automatically find and launch the next survey from the provider's dashboard</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="sContinuous" checked />
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row" style="margin-top:16px;">
+            <div>
+              <div class="toggle-label">Review Mode</div>
+              <div class="toggle-desc">Pause and display proposed answers before filling (manual confirmation)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="sReviewMode" />
+              <span class="toggle-thumb"></span>
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label>Fallback Strategy (when AI is disabled)</label>
+            <select id="sFallback">
+              <option value="first">First Option</option>
+              <option value="middle">Middle / Moderate Option</option>
+              <option value="random">Random Option</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label>Default Speed</label>
+            <select id="sSpeed">
+              <option value="slow">🐢 Slow (Extra Human-like, 1.5s-2.5s delay)</option>
+              <option value="normal" selected>Normal (0.6s-1.2s delay)</option>
+              <option value="fast">⚡ Fast (0.2s-0.4s delay)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label>Speed Limit Between Surveys (seconds, 0 = default delay)</label>
+            <input type="number" id="sSpeedLimit" min="0" max="60" placeholder="2" />
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label>Survey Dashboard URL (for continuous auto-fetching)</label>
+            <input type="url" id="sDashboardUrl" placeholder="https://example.com/dashboard/surveys" />
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnSaveSettings" style="align-self:flex-start;">Save Settings</button>
+        <span class="save-indicator" id="saveIndicator"></span>
+      </div>
+    </section>
+
+    <!-- ── History Tab ───────────────────────────────────────────────── -->
+    <section class="tab-panel" id="tab-history">
+      <div class="tab-header">
+        <div>
+          <h2 class="tab-title">Survey History &amp; Saved Answers</h2>
+          <p class="tab-desc">All surveys completed by SurveyBot with full Q&amp;A transcripts saved locally.</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-primary" id="btnExportAllHistory">Export All JSON</button>
+          <button class="btn-outline" id="btnClearHistory">Clear All</button>
+        </div>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-state">No surveys completed yet.</div>
+      </div>
+    </section>
+
+    <!-- ── Shortcuts Tab ─────────────────────────────────────────────── -->
+    <section class="tab-panel" id="tab-shortcuts">
+      <div class="tab-header">
+        <div>
+          <h2 class="tab-title">Keyboard Shortcuts</h2>
+          <p class="tab-desc">Control SurveyBot without opening the popup.</p>
+        </div>
+      </div>
+
+      <div class="shortcuts-list">
+        <div class="shortcut-card card">
+          <div class="shortcut-info">
+            <div class="shortcut-name">▶ Start Automation</div>
+            <div class="shortcut-desc">Begin filling the current survey</div>
+          </div>
+          <kbd>Alt + Shift + S</kbd>
+        </div>
+        <div class="shortcut-card card">
+          <div class="shortcut-info">
+            <div class="shortcut-name">⏸ Pause / Resume</div>
+            <div class="shortcut-desc">Toggle pause state</div>
+          </div>
+          <kbd>Alt + Shift + P</kbd>
+        </div>
+        <div class="shortcut-card card">
+          <div class="shortcut-info">
+            <div class="shortcut-name">⏹ Stop</div>
+            <div class="shortcut-desc">Stop automation completely</div>
+          </div>
+          <kbd>Alt + Shift + X</kbd>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px; padding:14px 16px;">
+        <p style="font-size:13px; color:var(--text-muted);">
+          To change these shortcuts, go to <strong>chrome://extensions/shortcuts</strong> in your browser.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>
